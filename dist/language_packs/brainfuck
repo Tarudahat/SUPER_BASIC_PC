@@ -1,0 +1,10 @@
+[Misc]
+OutputFileExtension=.bf
+CommentSign=_
+CommentSignEnd=¤
+
+[Loop]
+LoopTypes=1
+LoopIndent=    
+LoopEnd=]
+Loop1=[
