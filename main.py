@@ -46,7 +46,14 @@ clock = pygame.time.Clock()
 screen_resolution = pygame.display.get_surface().get_size()
 sleepmode_delay = 0
 sleepmode = False
+search_block_results = []
+search_block_results_final = []
+selected_result = 0
+search_block_results_y = []
 
+
+prev_selected_result = 0
+searching = False
 inputwindow_output = ""
 mouse_pos = [0.0, 0.0]
 
@@ -306,14 +313,37 @@ def scroll(text_):
 
 
 def search(text_):
-    try:
-        for block in block_list_arr:
-            if text_ == block.in_text:
-                search_block = block
-        for block in block_list_arr:
-            block.rect.y = block.rect.y - search_block.rect.y
-    except:
-        pass
+    search_block_results.clear()
+    search_block_results_final.clear()
+    search_block_results_y.clear()
+    for block in block_list_arr:
+        if text_ in block.in_text and block.deleted == False:
+            search_block_results.append(block)
+
+    i2 = 0
+    for block in search_block_results:
+        search_block_results_y.append(block.rect.y)
+        i2 += 1
+    search_block_results_y.sort()
+    i2 = 0
+    while i2 < len(search_block_results):
+        for block in search_block_results:
+            if search_block_results_y[i2] == block.rect.y:
+                if block.deleted == False:
+                    search_block_results_final.append(block)
+        i2 += 1
+
+    print(len(search_block_results_final))
+
+    if len(search_block_results_final) > 0:
+        searching = True
+    else:
+        searching = False
+
+    global prev_selected_result
+    prev_selected_result = -5
+
+    return searching
 
 
 def setblock(type, text):
@@ -364,11 +394,11 @@ def inputwindow(event, mouse_pos, text):
     return in_win.in_text
 
 
-def choice_window(event, mouse_pos, text, choice_array, choice_array_path):
+def choice_window(event, mouse_pos, text, choice_array_, choice_array_path_):
     done = False
     screen_part = int(screen_w()/2-425)
     ch_win = choice_object(175+screen_part, 250,
-                           choice_array, choice_array_path)
+                           choice_array_, choice_array_path_)
     confirm_button = button("Done", 685+screen_part, 420)
     cancel_button = button("Cancel", 70+screen_part, 420)
     while not done:
@@ -383,7 +413,7 @@ def choice_window(event, mouse_pos, text, choice_array, choice_array_path):
             done = True
         elif cancel_button.work(event, mouse_pos) == True:
             done = True
-            return_text = "¤cancelled"
+            return "¤cancelled"
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -394,6 +424,7 @@ def choice_window(event, mouse_pos, text, choice_array, choice_array_path):
 
         pygame.display.flip()
     return_text = ch_win.choice_array_path[ch_win.selected_choice]
+    time.sleep(0.25)
     return return_text
 
 
@@ -446,12 +477,35 @@ while running:
             elif (event.key == pygame.K_MINUS or event.key == pygame.K_KP_MINUS) and pygame.key.get_mods() & pygame.KMOD_CTRL:
                 zoom("out")
                 time.sleep(0.25)
+            if searching == True:
+                if event.key == pygame.K_UP and selected_result > 0:
+                    selected_result -= 1
+                elif event.key == pygame.K_DOWN and selected_result < len(search_block_results_final)-1:
+                    selected_result += 1
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 4:
                 scroll("up")
             elif event.button == 5:
                 scroll("down")
     # -=-=-=-=-=-=-=-
+
+    if searching == True:
+
+        if selected_result != prev_selected_result:
+
+            while search_block_results_final[selected_result].rect.y > 35 or search_block_results_final[selected_result].rect.y < 20:
+                if search_block_results_final[selected_result].rect.y > 30:
+                    scroll("down")
+                elif search_block_results_final[selected_result].rect.y < 40:
+                    scroll("up")
+
+        prev_selected_result = selected_result
+
+        if pygame.mouse.get_pressed() == (1, 0, 0):
+            selected_result = 0
+            search_block_results_final.clear()
+            search_block_results.clear()
+            searching = False
 
     mouse_pos = pygame.mouse.get_pos()
     cursor.rect.x = int(mouse_pos[0])
@@ -520,16 +574,22 @@ while running:
         inputwindow_output = inputwindow(
             event, mouse_pos, "What should be searched for?:")
         print(inputwindow_output)
+
         if inputwindow_output != "¤cancelled":
-            search(inputwindow_output)
+            searching = search(inputwindow_output)
             time.sleep(0.25)
 
     if language_button.work(event, mouse_pos) == True:
         inputwindow_output = choice_window(
             event, mouse_pos, "Please choose a language pack:", choice_array, choice_array_path)
         print(inputwindow_output)
+
         if inputwindow_output != "¤cancelled":
-            langpack = LanguagePack(inputwindow_output)
+            rusure = choice_window(
+                event, mouse_pos, "Warning:", ["Unsaved progres will be lost"], [""])
+            print(rusure)
+            if rusure != "¤cancelled":
+                langpack = LanguagePack(inputwindow_output)
 
     # fps counter
     if int(time.time()) > int(rem_time):
@@ -546,7 +606,7 @@ while running:
         sleepmode = True
 
     while sleepmode:
-        clock.tick(15)
+        clock.tick(5)
         for event in pygame.event.get():
             sleepmode = False
             sleepmode_delay = 0
