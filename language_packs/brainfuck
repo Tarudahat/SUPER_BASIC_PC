@@ -4,7 +4,7 @@ CommentSign=_
 CommentSignEnd=¤
 
 [Loop]
-LoopTypes=1
-LoopIndent=    
+LoopStart=[
 LoopEnd=]
-Loop1=[
+ForLoopStart=¤
+ForLoopEnd=¤

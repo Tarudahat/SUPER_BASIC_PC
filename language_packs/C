@@ -1,0 +1,16 @@
+[Misc]
+OutputFileExtension=.c
+CommentSign=//
+CommentSignEnd=¤
+
+[Loop]
+LoopStart=while(¤){
+LoopEnd=}
+ForLoopStart=for(¤){:
+ForLoopEnd=}
+
+[If]
+IfStart=if(¤){:
+IfEnd=}
+ElseIfStart=else if(¤){:
+ElseIfEnd=}

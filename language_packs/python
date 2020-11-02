@@ -4,16 +4,13 @@ CommentSign=#
 CommentSignEnd=¤
 
 [Loop]
-LoopTypes=2
-LoopIndent=    
-LoopEnd=#¤loop_end
-Loop1=while ¤:
-Loop2=for ¤:
+LoopStart=while ¤:
+LoopEnd=¤
+ForLoopStart=for ¤:
+ForLoopEnd=¤
 
-;if... or switch or whatever statments all go under [If]
 [If]
-IfTypes=3
-IfIndent=    
-If1=if ¤:
-If2=elif ¤:
-If3=else:
+IfStart=if ¤:
+IfEnd=¤
+ElseIfStart=elif ¤:
+ElseIfEnd=¤

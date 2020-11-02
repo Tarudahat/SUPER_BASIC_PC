@@ -24,7 +24,10 @@ block_img1 = pygame.image.load(
     os.path.normpath("./assets/graphics/block_1.png")).convert()
 block_img2 = pygame.image.load(
     os.path.normpath("./assets/graphics/block_2.png")).convert()
-
+block_img3 = pygame.image.load(
+    os.path.normpath("./assets/graphics/block_3.png")).convert()
+block_img4 = pygame.image.load(
+    os.path.normpath("./assets/graphics/block_4.png")).convert()
 
 # set up some vars and lists
 block = 0
@@ -83,6 +86,10 @@ class Block(pygame.sprite.Sprite):
             self.image = block_img1
         elif type == 2:
             self.image = block_img2
+        elif type == 3:
+            self.image = block_img3
+        elif type == 4:
+            self.image = block_img4
         self.type = type
         self.image.set_colorkey((255, 255, 255))
         self.rect = self.image.get_rect()
@@ -242,11 +249,17 @@ class LanguagePack():
         self.OutputFileExtension = language_pack["Misc"]["OutputFileExtension"]
 
         if "Loop" in language_pack_sections:
-            pass
+            self.LoopStart = language_pack["Loop"]["LoopStart"]
+            self.LoopEnd = language_pack["Loop"]["LoopEnd"]
+            self.ForLoopStart = language_pack["Loop"]["ForLoopStart"]
+            self.ForLoopEnd = language_pack["Loop"]["ForLoopEnd"]
             # set the loop stuff up
 
         if "If" in language_pack_sections:
-            pass
+            self.IfStart = language_pack["If"]["IfStart"]
+            self.IfEnd = language_pack["If"]["IfEnd"]
+            self.ElseIfStart = language_pack["If"]["IfEnd"]
+            self.ElseIfEnd = language_pack["If"]["ElseIfEnd"]
             # set the if stuff up
 
 
